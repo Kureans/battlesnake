@@ -1,43 +1,35 @@
-import CanvasManager from "./CanvasManager.js";
+import {CanvasManager} from "./CanvasManager.js";
 import GameState from "./GameState.js";
 import Rectangle from "./Rectangle.js";
+import { Direction } from "./Snake.js";
 
-function initListeners(manager: CanvasManager, rect: Rectangle) {
-    window.addEventListener("load", () => manager.drawStartRect(rect));
+function initListeners(manager: CanvasManager, gameState: GameState) {
     manager.canvas.addEventListener("keydown", (event) => {
         if (event.key == "ArrowDown") {
-
+            gameState.snake1.direction = Direction.DOWN;
         }
         else if (event.key == "ArrowUp") {
-
+            gameState.snake1.direction = Direction.UP;
         }
         else if (event.key == "ArrowLeft") {
-            manager.moveRectLeft(rect);
-            rect.x -= 10;
+            gameState.snake1.direction = Direction.LEFT;
         }
         else if (event.key == "ArrowRight") {
-            manager.moveRectRight(rect);
-            rect.x += 10;
+            gameState.snake1.direction = Direction.RIGHT;
         }
     })
 }
 
 try {
     const manager = new CanvasManager();
-    const startRect = new Rectangle(50, 50, 20, 60);
     const gameState = new GameState(manager.canvas.width, manager.canvas.height);
-    initListeners(manager, startRect);
+    initListeners(manager, gameState);
     (() => {
         function main() {
             window.requestAnimationFrame(main);
-            //clear canvas
             manager.clearCanvas();
-            //get input
             gameState.update();
-            //transform inputs into drawing
-            gameState.getDrawableObjects().forEach((obj) => {
-                manager.drawRect(obj.getRect());
-            });
+            manager.draw(gameState.getDrawableObjects());
         }
 
         main();

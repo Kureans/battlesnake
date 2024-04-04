@@ -1,10 +1,8 @@
-import Rectangle from "./Rectangle.js";
-
-interface DrawableRect {
-
+export interface Drawable {
+    draw(ctx: CanvasRenderingContext2D): void
 }
 
-export default class CanvasManager {
+export class CanvasManager {
     constructor() {
         const canvasOrNull = document.getElementById("canvas") as HTMLCanvasElement|null;
 
@@ -37,21 +35,9 @@ export default class CanvasManager {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
-    drawRect(rect: Rectangle) {
-        this.ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
-    }
-
-    drawStartRect(startRect: Rectangle) {
-        this.ctx.fillRect(startRect.x, startRect.y, startRect.width, startRect.height);
-    }
-
-    moveRectLeft(oldRect: Rectangle) {
-        this.ctx.clearRect(oldRect.x, oldRect.y, oldRect.width, oldRect.height);
-        this.ctx.fillRect(oldRect.x - 10, oldRect.y, oldRect.width, oldRect.height);
-    }
-
-    moveRectRight(oldRect: Rectangle) {
-        this.ctx.clearRect(oldRect.x, oldRect.y, oldRect.width, oldRect.height);
-        this.ctx.fillRect(oldRect.x + 10, oldRect.y, oldRect.width, oldRect.height);
+    draw(objects: Drawable[]) {
+        objects.forEach(obj => {
+            obj.draw(this.ctx);
+        });
     }
 }
