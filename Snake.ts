@@ -6,38 +6,45 @@ export enum Direction {
 };
 
 export class Snake implements Drawable {
-    constructor(body: Rectangle, speed: number, direction: Direction) {
-        this.body = body;
+    constructor(startX: number, startY: number, length: number, speed: number, direction: Direction) {
+        this.body = Array<Rectangle>(length);
         this.speed = speed;
+        this.length = length;
         this.direction = direction;
-    }
-
-    update(maxCanvasWidth: number, maxCanvasHeight: number) {
-        switch (this.direction) {
-            case Direction.UP:
-                this.body.y = Math.max(this.body.y-this.speed, 0);
-                break;
-            case Direction.DOWN:
-                this.body.y = Math.min(this.body.y+this.speed, maxCanvasHeight-this.body.height);
-                break;
-            case Direction.LEFT:
-                this.body.x = Math.max(this.body.x-this.speed, 0);
-                break;
-            case Direction.RIGHT:
-                this.body.x = Math.min(this.body.x+this.speed, maxCanvasWidth-this.body.width);
-                break;
+        for (let i = 0; i < length; i++) {
+            //starts gg right, head idx == length-1
+            this.body[i] = new Rectangle(startX + i*10, startY, 10, 10);
         }
     }
 
+    update(maxCanvasWidth: number, maxCanvasHeight: number) {
+        const blockHeight = 10;
+        const blockWidth = 10;
+        switch (this.direction) {
+            case Direction.UP:
+                this.body.push(new Rectangle(this.body[this.length-1].x, Math.max(this.body[this.length-1].y-this.speed, 0), 10, 10));
+                break;
+            case Direction.DOWN:
+                this.body.push(new Rectangle(this.body[this.length-1].x, Math.min(this.body[this.length-1].y+this.speed,  maxCanvasHeight-blockHeight), 10, 10));
+                break;
+            case Direction.LEFT:
+                this.body.push(new Rectangle(Math.max(this.body[this.length-1].x-this.speed, 0), this.body[this.length-1].y, 10, 10))
+                break;
+            case Direction.RIGHT:
+                this.body.push(new Rectangle(Math.min(this.body[this.length-1].x+this.speed, maxCanvasWidth-blockWidth), this.body[this.length-1].y, 10, 10))
+                break;
+        }
+        this.length++;
+    }
+
     draw(ctx: CanvasRenderingContext2D): void {
-        ctx.fillRect(this.body.x, this.body.y, this.body.width, this.body.height);
+        for (let i = 0; i < this.length; i++) {
+            ctx.fillRect(this.body[i].x, this.body[i].y, this.body[i].width, this.body[i].height);
+        }
     }
 
-    getRect() {
-        return this.body;
-    }
-
-    body: Rectangle;
+    body: Rectangle[];
+    length: number;
     speed: number;
     direction: Direction;
 };

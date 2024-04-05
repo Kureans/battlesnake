@@ -1,6 +1,5 @@
 import {CanvasManager} from "./CanvasManager.js";
 import GameState from "./GameState.js";
-import Rectangle from "./Rectangle.js";
 import { Direction } from "./Snake.js";
 
 function initListeners(manager: CanvasManager, gameState: GameState) {
