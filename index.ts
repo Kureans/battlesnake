@@ -4,17 +4,25 @@ import { Direction } from "./Snake.js";
 
 function initListeners(manager: CanvasManager, gameState: GameState) {
     manager.canvas.addEventListener("keydown", (event) => {
+        const currentDirection = gameState.snake1.direction;
         if (event.key == "ArrowDown") {
-            gameState.snake1.direction = Direction.DOWN;
+            if (currentDirection != Direction.UP)
+                gameState.snake1.direction = Direction.DOWN;
         }
         else if (event.key == "ArrowUp") {
-            gameState.snake1.direction = Direction.UP;
+            if (currentDirection != Direction.DOWN)
+                gameState.snake1.direction = Direction.UP;
         }
         else if (event.key == "ArrowLeft") {
-            gameState.snake1.direction = Direction.LEFT;
+            if (currentDirection != Direction.RIGHT)
+                gameState.snake1.direction = Direction.LEFT;
         }
         else if (event.key == "ArrowRight") {
-            gameState.snake1.direction = Direction.RIGHT;
+            if (currentDirection != Direction.LEFT)
+                gameState.snake1.direction = Direction.RIGHT;
+        }
+        else if (event.key == " ") {
+            gameState.isRunning = !gameState.isRunning;
         }
     })
 }
@@ -26,7 +34,11 @@ try {
     (() => {
         function main() {
             window.requestAnimationFrame(main);
-            manager.clearCanvas();
+            if (!gameState.isRunning) {
+                manager.clearCanvas();
+                gameState.reset();
+                return;
+            }
             gameState.update();
             manager.draw(gameState.getDrawableObjects());
         }

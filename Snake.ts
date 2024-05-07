@@ -17,7 +17,7 @@ export class Snake implements Drawable {
         }
     }
 
-    update(maxCanvasWidth: number, maxCanvasHeight: number) {
+    update(maxCanvasWidth: number, maxCanvasHeight: number, visited: boolean[][]): boolean {
         const blockHeight = 10;
         const blockWidth = 10;
         switch (this.direction) {
@@ -35,6 +35,19 @@ export class Snake implements Drawable {
                 break;
         }
         this.length++;
+        const new_x = Math.floor(this.body[this.length-1].x / 10);
+        const new_y = Math.floor(this.body[this.length-1].y / 10);
+        // console.log(`Head Coordinates Raw-> x: ${this.body[this.length-1].x}, y: ${this.body[this.length-1].y}`);
+        console.log(`Head Coordinates Floored-> x: ${new_x}, y: ${new_y}`);
+        // console.log(`Visited Size: ${visited.length} ${visited[0].length}`)
+        if (visited[new_x][new_y]) {
+            console.log("Visited!");
+            return false;
+        } else {
+            console.log("Not Visited");
+            visited[new_x][new_y] = true;
+            return true;
+        }
     }
 
     draw(ctx: CanvasRenderingContext2D): void {
